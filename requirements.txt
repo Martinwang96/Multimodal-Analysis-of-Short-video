@@ -1,0 +1,19 @@
+# Core data processing
+pandas>=2.0
+numpy>=1.24
+
+# Deep learning / NLP
+torch>=2.1
+transformers>=4.38
+tqdm>=4.66
+bertopic>=0.16
+
+# Speech / multimodal processing
+funasr>=1.1
+modelscope>=1.15
+ffmpeg-python>=0.2.0
+pydub>=0.25.1
+
+# Visualization
+matplotlib>=3.8
+seaborn>=0.13

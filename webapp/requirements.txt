@@ -1,0 +1,4 @@
+# Web 应用运行依赖
+flask>=3.0
+pandas>=2.0
+jieba>=0.42

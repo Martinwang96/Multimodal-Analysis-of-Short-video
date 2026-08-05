@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+{% block title %}概览 · 《反方向的钟》多模态分析{% endblock %}
+
+{% block content %}
+<!-- Hero：编辑式大标题 + 一句话定位 + 内联数据带 -->
+<header class="hero">
+  <div class="hero-kicker">中文微短剧 · 文本特征研究</div>
+  <h1 class="hero-title">《反方向的钟》<br>多模态叙事分析</h1>
+  <p class="hero-lede">
+    微短剧具有<strong>时长短、节奏快、反转强、情绪密度高</strong>的传播特征，适合从文本、情感与叙事结构的角度做计算分析。
+    本项目构建了一条"转写 — 事件检测 — 情感分析 — 可视化"的研究型管线：先用 FunASR 完成中文转写与说话人分离，
+    再以 BERTopic + 相似度模型 + 规则系统划分事件边界，随后进行句子 / 事件 / 说话人三级情感分析，
+    最终服务于短剧叙事节奏与情绪转折的解释。
+  </p>
+  <div class="data-strip" id="metricsGrid">
+    <div class="data-cell">
+      <div class="data-value" id="m-lines">-</div>
+      <div class="data-label">对白总数（句）</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-value" id="m-events">-</div>
+      <div class="data-label">识别事件（个）</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-value" id="m-sources">-</div>
+      <div class="data-label">剧集（集）</div>
+    </div>
+    <div class="data-cell">
+      <div class="data-value" id="m-speakers">-</div>
+      <div class="data-label">说话人（含 NPC）</div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 研究背景与目标 -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-no">01</span>
+    <h2 class="section-title">研究背景与目标</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="duo">
+    <div>
+      <p class="prose">
+        本研究以中文微短剧<strong>《反方向的钟》</strong>（88 集）为分析对象。短剧的单集时长极短、对白高度密集，
+        情绪随事件快速切换，传统的逐集人工细读难以量化其叙事策略，因此需要一条自动化的计算分析流程。
+      </p>
+      <p class="prose">
+        分析所用的全部对白文本由 <strong>FunASR 自动转写</strong>产出，并<strong>经人工逐句校对台词与说话人归属</strong>后进入后续分析，
+        以保证事件划分与情感计算的输入质量。
+      </p>
+    </div>
+    <ul class="goal-list">
+      <li>将短剧音视频转写为结构化对白数据（说话人 / 文本 / 集）</li>
+      <li>识别事件边界，获得比"集"更细粒度的叙事单元</li>
+      <li>计算句子级、事件级、说话人级情感得分</li>
+      <li>可视化角色与事件间的情感波动，定位情绪转折点</li>
+      <li>为叙事节奏、反转结构与多模态个案分析提供数据支持</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 02 方法管线 -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-no">02</span>
+    <h2 class="section-title">方法管线</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="pipeline">
+    <div class="pipe-step">
+      <div class="pipe-no">1</div>
+      <div class="pipe-body">
+        <div class="pipe-head">
+          <span class="pipe-name">音视频转写与说话人分离</span>
+          <span class="badge badge-pre">前置步骤 · 脚本未公开</span>
+        </div>
+        <p class="pipe-desc">
+          基于 <code>FunASR</code> 调用 ASR、VAD、标点恢复与说话人分离模型（ffmpeg 预处理为 16k 单声道），
+          输出逐句转写 CSV。对应 <code>app_design_update.py</code> / <code>download_model.py</code>，
+          该部分代码未随仓库公开，本页数据从其转写结果开始。
+        </p>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-no">2</div>
+      <div class="pipe-body">
+        <div class="pipe-head">
+          <span class="pipe-name">人工校对</span>
+          <span class="badge badge-pre">人工环节</span>
+        </div>
+        <p class="pipe-desc">自动转写后的全部台词与说话人结果均经人工校对，整理为含 说话人 / 文本内容 / source（集） 的结构化 CSV。</p>
+      </div>
+    </div>
+    <div class="pipe-step is-active">
+      <div class="pipe-no">3</div>
+      <div class="pipe-body">
+        <div class="pipe-head">
+          <span class="pipe-name">文本基础分析</span>
+          <span class="badge badge-live">本页可交互</span>
+        </div>
+        <p class="pipe-desc">
+          jieba 分词后的词频统计、词云、角色台词数量与字数分布。对应 <code>01_文本分析_basis.ipynb</code>，
+          见<a href="/text">文本分析</a>页。
+        </p>
+      </div>
+    </div>
+    <div class="pipe-step is-active">
+      <div class="pipe-no">4</div>
+      <div class="pipe-body">
+        <div class="pipe-head">
+          <span class="pipe-name">事件检测</span>
+          <span class="badge badge-live">本页可交互</span>
+        </div>
+        <p class="pipe-desc">
+          混合式方法：<code>Erlangshen-Ubert-330M</code> 嵌入 + BERTopic 标记初始边界，
+          <code>Erlangshen-Roberta-110M-Similarity</code> 计算相邻单元相似度，
+          再经优先级规则（同说话人合并 / source 切换 / 中文复句关联词）细化，共识别 375 个事件。
+          对应 <code>02_events_process_v5.py</code>，见<a href="/events">事件检测</a>页。
+        </p>
+      </div>
+    </div>
+    <div class="pipe-step is-active">
+      <div class="pipe-no">5</div>
+      <div class="pipe-body">
+        <div class="pipe-head">
+          <span class="pipe-name">情感分析</span>
+          <span class="badge badge-approx">本页为词典近似实现</span>
+        </div>
+        <p class="pipe-desc">
+          原项目使用 <code>Erlangshen-Roberta-110M-Sentiment</code> 输出句子 / 事件 / 说话人三级得分
+          （对应 <code>03_sentiment_analysis_v3.py</code>，结果文件未随仓库公开）。
+          本页采用内置中文情感词典的轻量打分复现其分析思路：趋势走向可参考，绝对数值与模型结果存在差异。
+          见<a href="/sentiment">情感分析</a>页。
+        </p>
+      </div>
+    </div>
+    <div class="pipe-step is-active">
+      <div class="pipe-no">6</div>
+      <div class="pipe-body">
+        <div class="pipe-head">
+          <span class="pipe-name">可视化与对白浏览</span>
+          <span class="badge badge-live">本页可交互</span>
+        </div>
+        <p class="pipe-desc">
+          原项目的 matplotlib 静态图（<code>04_visualization.py</code>）在本页重构为 ECharts 交互图表；
+          <a href="/browser">对话浏览</a>页支持按事件 / 集 / 说话人 / 关键词检索全部对白。
+        </p>
+      </div>
+    </div>
+    <div class="pipe-step">
+      <div class="pipe-no">7</div>
+      <div class="pipe-body">
+        <div class="pipe-head">
+          <span class="pipe-name">OpenFace 面部表情分析</span>
+          <span class="badge badge-missing">仅 PPT 展示 · 未纳入仓库</span>
+        </div>
+        <p class="pipe-desc">
+          项目展示材料中还包含基于 OpenFace 的面部 Action Unit 分析（如以 AU06 + AU12 组合识别"高兴"），
+          用于将文本情感与视觉表情共同解释叙事策略；对应代码未公开，本页不含该部分结果。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 分析阶段入口 -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-no">03</span>
+    <h2 class="section-title">进入分析</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="stage-list">
+    <a href="/text" class="stage-item">
+      <span class="stage-no">01</span>
+      <span>
+        <span class="stage-name">文本分析</span>
+        <div class="stage-desc">角色台词排行 · 全剧词云 · 高频词 · 字数分布</div>
+      </span>
+      <span class="stage-go">→</span>
+    </a>
+    <a href="/events" class="stage-item">
+      <span class="stage-no">02</span>
+      <span>
+        <span class="stage-name">事件检测</span>
+        <div class="stage-desc">每集事件分布 · 事件大小 · 375 事件时间线 · BERTopic 主题</div>
+      </span>
+      <span class="stage-go">→</span>
+    </a>
+    <a href="/browser" class="stage-item">
+      <span class="stage-no">03</span>
+      <span>
+        <span class="stage-name">对话浏览</span>
+        <div class="stage-desc">2916 条对白全文检索 · 按事件 / 集 / 说话人筛选 · 事件边界标记</div>
+      </span>
+      <span class="stage-go">→</span>
+    </a>
+    <a href="/sentiment" class="stage-item">
+      <span class="stage-no">04</span>
+      <span>
+        <span class="stage-name">情感分析</span>
+        <div class="stage-desc">事件级情感波动 · 说话人情感走势 · 正负分布 · 角色×事件热力图</div>
+      </span>
+      <span class="stage-go">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- 04 数据说明与局限 -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-no">04</span>
+    <h2 class="section-title">数据说明与局限</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="notes-list">
+    <div class="note-item">
+      <div class="note-key">数据起点</div>
+      <div class="note-val">本页全部分析基于事件检测结果文件 <code>02_result_反方向的钟.csv</code>（2916 条对白，含 BERTopic 主题 ID 与事件 ID）。音视频转写为前置离线完成，转写脚本（FunASR GUI）未随仓库公开。</div>
+    </div>
+    <div class="note-item">
+      <div class="note-key">人工校对边界</div>
+      <div class="note-val">自动转写产出的台词与说话人归属经过人工逐句校对，再进入事件检测。这是研究上合理的做法，也意味着本流程的非全自动环节在此。</div>
+    </div>
+    <div class="note-item">
+      <div class="note-key">情感分析差异</div>
+      <div class="note-val">原项目的情感结果（sentiment_results/，Erlangshen 模型产出）未随仓库公开。本页情感页为内置中文情感词典的轻量实现，仅用于复现分析方法与交互展示，趋势可参考，绝对数值与模型结果存在差异。</div>
+    </div>
+    <div class="note-item">
+      <div class="note-key">未纳入部分</div>
+      <div class="note-val">OpenFace 面部表情（Action Unit）分析仅在项目 PPT 中展示，处理脚本未公开；词云图片等静态产物亦未随仓库提供，本页词云由 jieba 分词实时计算生成。</div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 方法与工具 -->
+<section class="section">
+  <div class="section-head">
+    <span class="section-no">05</span>
+    <h2 class="section-title">方法与工具</h2>
+    <span class="section-line"></span>
+  </div>
+  <div class="credit-row">
+    <span class="credit"><b>FunASR</b> · 中文语音识别与说话人分离</span>
+    <span class="credit"><b>BERTopic</b> · 主题建模与事件边界初筛</span>
+    <span class="credit"><b>Erlangshen 系列</b> · 中文嵌入 / 相似度 / 情感模型（IDEA-CCNL）</span>
+    <span class="credit"><b>OpenFace</b> · 面部行为分析（PPT 展示）</span>
+    <span class="credit"><b>jieba</b> · 中文分词</span>
+    <span class="credit"><b>ECharts</b> · 交互可视化（本页重构）</span>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/overview.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){window.Pages&&window.Pages.overview&&window.Pages.overview()});</script>
+{% endblock %}

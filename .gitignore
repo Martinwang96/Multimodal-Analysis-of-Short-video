@@ -1,0 +1,32 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+.python-version
+
+# IDE / 工具
+.vscode/
+.idea/
+.codebuddy/
+.playwright-cli/
+
+# 验证用临时截图
+shot-*.png
+
+# 情感分析结果（原项目缺失，由脚本运行生成）
+sentiment_results/
+sentiment_plots/
+
+# jieba 缓存
+jieba.cache
+
+# 日志
+*.log

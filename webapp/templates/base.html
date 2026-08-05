@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}《反方向的钟》多模态分析{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='none' stroke='%23D9A441' stroke-width='7'/><path d='M50 26v24l17 10' fill='none' stroke='%23D9A441' stroke-width='7' stroke-linecap='round'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0/dist/echarts-wordcloud.min.js"></script>
+</head>
+<body>
+  <nav class="topnav">
+    <a href="/" class="brand">
+      <span class="brand-title">反方向的钟</span>
+      <span class="brand-sub">多模态叙事分析</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link {% if active_page=='overview' %}active{% endif %}">概览</a>
+      <a href="/text" class="nav-link {% if active_page=='text' %}active{% endif %}">文本分析</a>
+      <a href="/events" class="nav-link {% if active_page=='events' %}active{% endif %}">事件检测</a>
+      <a href="/browser" class="nav-link {% if active_page=='browser' %}active{% endif %}">对话浏览</a>
+      <a href="/sentiment" class="nav-link {% if active_page=='sentiment' %}active{% endif %}">情感分析</a>
+    </div>
+    <div class="mode-badge" id="modeBadge">Flask</div>
+  </nav>
+
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <span>短剧文本特征研究 · 以《反方向的钟》为例</span>
+    <span class="footer-sep">·</span>
+    <span>转写 — 事件检测 — 情感分析 — 可视化</span>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/sentiment.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

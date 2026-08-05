@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}文本分析 · 《反方向的钟》{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-kicker">
+    <span class="kicker-no">阶段 01</span>
+    <span class="kicker-sep">·</span>
+    <span>对应脚本 01_文本分析_basis.ipynb</span>
+    <span class="kicker-sep">·</span>
+    <span>jieba 分词实时计算</span>
+  </div>
+  <h1 class="page-title">文本分析</h1>
+  <p class="page-subtitle">角色台词统计 · 词云 · 高频词 · 字数分布。原 notebook 中的 matplotlib 静态图在本页重构为交互图表。</p>
+</div>
+
+<div class="grid grid-2 mb-16">
+  <div class="card">
+    <div class="card-title">角色台词数量 Top 15</div>
+    <div id="chart-line-count" class="chart"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">角色台词总字数 Top 15</div>
+    <div id="chart-line-chars" class="chart"></div>
+  </div>
+</div>
+
+<div class="card mb-16">
+  <div class="card-title">全剧词云</div>
+  <div id="chart-wordcloud" class="chart chart-lg"></div>
+</div>
+
+<div class="grid grid-2-1">
+  <div class="card">
+    <div class="card-title">高频词 Top 20</div>
+    <div id="chart-top-words" class="chart"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">字数分布</div>
+    <div id="chart-char-dist" class="chart"></div>
+    <div id="char-stats" class="text-muted" style="font-size:12px; margin-top:8px;"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/text.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){window.Pages&&window.Pages.text&&window.Pages.text()});</script>
+{% endblock %}

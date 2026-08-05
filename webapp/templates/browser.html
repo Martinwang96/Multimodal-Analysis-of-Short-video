@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}对话浏览 · 《反方向的钟》{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-kicker">
+    <span class="kicker-no">数据</span>
+    <span class="kicker-sep">·</span>
+    <span>02_result_反方向的钟.csv</span>
+    <span class="kicker-sep">·</span>
+    <span>2916 条对白 · 转写后经人工校对</span>
+  </div>
+  <h1 class="page-title">对话浏览</h1>
+  <p class="page-subtitle">按事件 / 集 / 说话人 / 关键词筛选浏览全部对白，事件边界以分隔带标记。</p>
+</div>
+
+<div class="card mb-16">
+  <div class="filter-bar">
+    <label>集数：
+      <select id="filter-source"><option value="">全部</option></select>
+    </label>
+    <label>事件ID：
+      <input type="number" id="filter-event" placeholder="如 1" min="1" style="width:90px;">
+    </label>
+    <label>说话人：
+      <select id="filter-speaker"><option value="">全部</option></select>
+    </label>
+    <label>关键词：
+      <input type="text" id="filter-keyword" placeholder="搜索对白内容">
+    </label>
+    <button class="btn" id="btn-search">查询</button>
+    <button class="btn btn-ghost" id="btn-reset">重置</button>
+    <span class="text-muted" id="result-summary" style="margin-left:auto; font-size:13px;"></span>
+  </div>
+
+  <div id="dialogue-container">
+    <div class="loading">加载中...</div>
+  </div>
+
+  <div class="pagination" id="pagination"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/browser.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){window.Pages&&window.Pages.browser&&window.Pages.browser()});</script>
+{% endblock %}

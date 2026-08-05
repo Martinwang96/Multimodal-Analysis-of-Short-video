@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}事件检测 · 《反方向的钟》{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-kicker">
+    <span class="kicker-no">阶段 02</span>
+    <span class="kicker-sep">·</span>
+    <span>对应脚本 02_events_process_v5.py</span>
+    <span class="kicker-sep">·</span>
+    <span>结果来自原项目离线运行</span>
+  </div>
+  <h1 class="page-title">事件检测</h1>
+  <p class="page-subtitle">混合式方法：Erlangshen-Ubert-330M 嵌入 + BERTopic 初始边界 → 相邻单元相似度 → 优先级规则细化（同说话人合并 / source 切换 / 中文复句关联词），共识别 375 个事件。</p>
+</div>
+
+<div class="grid grid-2 mb-16">
+  <div class="card">
+    <div class="card-title">每集事件数分布</div>
+    <div id="chart-events-per-source" class="chart"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">事件大小分布</div>
+    <div id="chart-event-size" class="chart"></div>
+    <div id="event-size-stats" class="text-muted" style="font-size:12px; margin-top:8px;"></div>
+  </div>
+</div>
+
+<div class="card mb-16">
+  <div class="card-title">事件时间线（按事件ID排列，柱高=对白数，可缩放）</div>
+  <div id="chart-timeline" class="chart chart-lg"></div>
+</div>
+
+<div class="grid grid-2-1">
+  <div class="card">
+    <div class="card-title">BERTopic 主题分布<span class="card-note">主题名由该主题下对白高频词生成</span></div>
+    <div id="chart-topics" class="chart"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">事件统计摘要</div>
+    <div id="event-summary"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/events.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){window.Pages&&window.Pages.events&&window.Pages.events()});</script>
+{% endblock %}

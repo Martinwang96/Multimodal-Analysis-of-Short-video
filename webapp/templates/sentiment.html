@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}情感分析 · 《反方向的钟》{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-kicker">
+    <span class="kicker-no">阶段 03</span>
+    <span class="kicker-sep">·</span>
+    <span>对应脚本 03_sentiment_analysis_v3.py</span>
+    <span class="kicker-sep">·</span>
+    <span>本页为词典近似实现</span>
+  </div>
+  <h1 class="page-title">情感分析</h1>
+  <p class="page-subtitle">原项目使用 Erlangshen-Roberta-110M-Sentiment 输出三级情感得分，结果文件未随仓库公开。本页以内置中文情感词典做轻量正/负打分，复现其分析思路：趋势走向可参考，绝对数值与模型结果存在差异。</p>
+</div>
+
+<div class="card mb-16">
+  <div class="card-title">事件级情感波动<span class="card-note">得分 &gt; 0.5 为正向（暖绿），&lt; 0.5 为负向（陶土红）</span></div>
+  <div id="chart-event-sentiment" class="chart chart-lg"></div>
+</div>
+
+<div class="grid grid-2 mb-16">
+  <div class="card">
+    <div class="card-title">说话人级情感走势（Top 8 角色）</div>
+    <div id="chart-speaker-sentiment" class="chart chart-lg"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">事件正负情感分布</div>
+    <div id="chart-dist" class="chart"></div>
+  </div>
+</div>
+
+<div class="grid grid-2-1">
+  <div class="card">
+    <div class="card-title">说话人情感均值排行</div>
+    <div id="chart-speaker-avg" class="chart"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">情感统计</div>
+    <div id="sentiment-summary"></div>
+  </div>
+</div>
+
+<div class="card mt-16">
+  <div class="card-title">事件 × 说话人 情感热力图（Top 10 角色）</div>
+  <div id="chart-heatmap" class="chart chart-lg"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/sentiment_page.js') }}"></script>
+<script>document.addEventListener('DOMContentLoaded',function(){window.Pages&&window.Pages.sentiment&&window.Pages.sentiment()});</script>
+{% endblock %}
